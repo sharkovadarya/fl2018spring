@@ -1,7 +1,6 @@
 package ru.spbau.group202.fl.sharkova.hw3lexer;
 
 public class Token {
-    public static final int WHITESPACE = 0;
     public static final int PLUSMINUS = 1;
     public static final int MULTDIV = 2;
     public static final int POWER = 3;
@@ -11,10 +10,12 @@ public class Token {
 
     public final int token;
     public final String sequence;
+    public final int position;
 
-    public Token(int token, String sequence) {
+    public Token(int token, String sequence, int position) {
         this.token = token;
         this.sequence = sequence;
+        this.position = position;
     }
 
     @Override

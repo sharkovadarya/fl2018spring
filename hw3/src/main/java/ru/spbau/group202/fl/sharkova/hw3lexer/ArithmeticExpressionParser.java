@@ -12,10 +12,8 @@ import java.util.ArrayList;
 public class ArithmeticExpressionParser {
     private int level;
     private int next;
-    private int position;
-    private int lastValidTokenPosition;
-    private int lastValidTokenLength;
     private Token token;
+    private Token prevToken;
     private ArrayList<Token> tokens;
     private ArrayList<String> result = new ArrayList<>();
 
@@ -24,11 +22,13 @@ public class ArithmeticExpressionParser {
     }
 
     public ArrayList<String> parse() throws ParseException  {
+        if (tokens.size() == 0) {
+            throw new ParseException("Parsing error at position 0");
+        }
         next();
-        skipSpaces();
         getE();
         if (token != null) { // if the expression has been fully parsed, next() returns null
-            throw new ParseException("Parsing error at position " + position);
+            throw new ParseException("Parsing error at position " + token.position);
         }
         else {
             result.add("Successful parse");
@@ -39,15 +39,12 @@ public class ArithmeticExpressionParser {
     private void getE() throws ParseException  {
         enter('E');
         getT();
-        while (token != null && token.token == Token.WHITESPACE) {
-            next();
-        }
         while (token != null && token.token == Token.PLUSMINUS) {
             next();
             getT();
         }
         if (token != null && token.token == Token.NUMBER) {
-            throw new ParseException("Error at position " + lastValidTokenPosition);
+            throw new ParseException("Parsing error at position " + token.position);
         }
         leave('E');
     }
@@ -55,9 +52,6 @@ public class ArithmeticExpressionParser {
     private void getT() throws ParseException  {
         enter('T');
         getS();
-        while (token != null && token.token == Token.WHITESPACE) {
-            next();
-        }
         while (token != null && token.token == Token.MULTDIV) {
             next();
             getS();
@@ -68,9 +62,6 @@ public class ArithmeticExpressionParser {
     private void getS() throws ParseException  {
         enter('S');
         getF();
-        while (token != null && token.token == Token.WHITESPACE) {
-            next();
-        }
         if (token != null && token.token == Token.POWER) {
             next();
             getS();
@@ -80,11 +71,9 @@ public class ArithmeticExpressionParser {
 
     private void getF() throws ParseException {
         enter('F');
-        while (token != null && token.token == Token.WHITESPACE) {
-            next();
-        }
         if (token == null) {
-            throw new ParseException("Parsing error at position " + (lastValidTokenPosition + lastValidTokenLength - 1));
+            throw new ParseException("Parsing error at position " +
+                    (prevToken.position + prevToken.sequence.length()));
         }
         if (token.token == Token.NUMBER) {
             next();
@@ -99,41 +88,24 @@ public class ArithmeticExpressionParser {
                 next();
             }
             else {
-                throw new ParseException("Parsing error at position " + position);
+                throw new ParseException("Parsing error at position " +
+                        (token == null ? (prevToken.position + prevToken.sequence.length())
+                                       : token.position));
             }
         }
         else {
-            throw new ParseException("Parsing error at position " + (lastValidTokenPosition + lastValidTokenLength));
+            throw new ParseException("Parsing error at position " + token.position);
         }
         leave('F');
     }
 
     private void next() {
+        prevToken = token;
         if (next >= tokens.size()) {
             token = null;
             return;
         }
-
-        if (token != null && token.token != Token.WHITESPACE) {
-            lastValidTokenPosition = position;
-            lastValidTokenLength = token.sequence.length();
-        }
         token = tokens.get(next++);
-        if (token != null) {
-            if (token.token != Token.WHITESPACE) {
-                lastValidTokenPosition = position;
-            }
-            position += token.sequence.length();
-        }
-    }
-
-    private void skipSpaces() {
-        while (next < tokens.size() && token.token == Token.WHITESPACE) {
-            token = tokens.get(next++);
-            if (next == tokens.size()) {
-                token = null;
-            }
-        }
     }
 
     private void enter(char name) {

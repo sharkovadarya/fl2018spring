@@ -103,7 +103,7 @@ public class ArithmeticExpressionParserTest {
             p.parse();
             fail();
         } catch (ParseException e) {
-            assertEquals("Parsing error at position 0", e.getMessage());
+            assertEquals("Parsing error at position 1", e.getMessage());
         }
     }
 
@@ -172,71 +172,122 @@ public class ArithmeticExpressionParserTest {
         }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseMismatchedClosingBracket() throws TokenizeException, ParseException {
+    @Test
+    public void testParseMismatchedClosingBracket() throws TokenizeException {
         String expr = "21 + 30)";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 7", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseMismatchedClosingBracketLongerExpression()
-            throws TokenizeException, ParseException {
+    @Test
+    public void testParseMismatchedClosingBracketLongerExpression() throws TokenizeException {
         String expr = "(2 /(21 + 30) / 0))";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 18", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseMismatchedOpeningBracket() throws TokenizeException, ParseException {
+    @Test
+    public void testParseMismatchedOpeningBracket() throws TokenizeException{
         String expr = "(30 - 21";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 8", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseMismatchedOpeningBracketLongerExpression()
-            throws TokenizeException, ParseException {
+    @Test
+    public void testParseMismatchedOpeningBracketLongerExpression() throws TokenizeException{
         String expr = "21 + (13 / (30 - 21 ^(55 - 1)  )";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 32", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseTwoNumbersWithoutOperator() throws TokenizeException, ParseException {
+    @Test
+    public void testParseTwoNumbersWithoutOperator() throws TokenizeException {
         String expr = "30 89";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 3", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
+    @Test
     public void testParseTwoNumbersWithoutOperatorLongerExpression()
-            throws TokenizeException, ParseException {
+            throws TokenizeException {
         String expr = "21 + 2221^(30 89) / 992 - 1";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 14", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseTwoOperatorsInARow() throws TokenizeException, ParseException {
+    @Test
+    public void testParseTwoOperatorsInARow() throws TokenizeException {
         String expr = "50 * -89";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 5", e.getMessage());
+        }
     }
 
-    @Test(expected = ParseException.class)
-    public void testParseTwoOperatorsInARowLongerExpression() throws TokenizeException, ParseException {
+    @Test
+    public void testParseTwoOperatorsInARowLongerExpression() throws TokenizeException {
         String expr = "12 / 0 * 23 / (50) * /89 - 89";
         ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
         ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
-        p.parse();
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 21", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testParseEmptyExpression() throws TokenizeException {
+        String expr = "   \t\n\r\n     \t     ";
+        ArrayList<Token> tokens = ArithmeticExpressionLexer.getTokenList(expr);
+        ArithmeticExpressionParser p = new ArithmeticExpressionParser(tokens);
+        try {
+            p.parse();
+            fail();
+        } catch (ParseException e) {
+            assertEquals("Parsing error at position 0", e.getMessage());
+        }
     }
 
 }
