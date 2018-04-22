@@ -37,7 +37,9 @@ public class ArithmeticExpressionParser {
     }
 
     private void getE() throws ParseException  {
-        enter('E');
+        if (prevToken == null || prevToken.token != Token.OPEN_BRACKET) {
+            enter('E');
+        }
         getT();
         while (token != null && token.token == Token.PLUSMINUS) {
             next();
@@ -46,7 +48,10 @@ public class ArithmeticExpressionParser {
         if (token != null && token.token == Token.NUMBER) {
             throw new ParseException("Parsing error at position " + token.position);
         }
-        leave('E');
+
+        if (prevToken == null ||  prevToken.token != Token.CLOSE_BRACKET) {
+            leave('E');
+        }
     }
 
     private void getT() throws ParseException  {
@@ -109,6 +114,9 @@ public class ArithmeticExpressionParser {
     }
 
     private void enter(char name) {
+        if (token != null && token.token == Token.OPEN_BRACKET) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         spaces(level++, sb);
         sb.append("-" + name + "    ");
@@ -119,6 +127,9 @@ public class ArithmeticExpressionParser {
     }
 
     private void leave(char name) {
+        if (token != null && token.token == Token.CLOSE_BRACKET) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         spaces(--level, sb);
         sb.append("-" + name + "    ");
