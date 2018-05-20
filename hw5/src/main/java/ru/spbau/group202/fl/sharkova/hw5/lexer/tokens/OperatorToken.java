@@ -1,4 +1,4 @@
-package ru.spbau.group202.fl.sharkova.hw4lexer.tokens;
+package ru.spbau.group202.fl.sharkova.hw5.lexer.tokens;
 
 /**
  * This class represents a L language operator.
@@ -18,6 +18,7 @@ public class OperatorToken extends Token {
     public static final int GTE = 10;
     public static final int AND = 11;
     public static final int OR = 12;
+    public static final int ASSIGN = 13;
 
     public OperatorToken(int lineNumber, int startPos, int endPos, int token, String sequence) {
         super(lineNumber, startPos, endPos, token, sequence);
@@ -70,6 +71,9 @@ public class OperatorToken extends Token {
                 break;
             case OR:
                 str = "Or";
+                break;
+            case ASSIGN:
+                str = "Assign";
                 break;
         }
 

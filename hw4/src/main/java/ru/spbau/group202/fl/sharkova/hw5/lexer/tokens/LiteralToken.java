@@ -1,6 +1,6 @@
-package ru.spbau.group202.fl.sharkova.hw4lexer.tokens;
+package ru.spbau.group202.fl.sharkova.hw4lexer.lexer.tokens;
 
-import ru.spbau.group202.fl.sharkova.hw4lexer.LexerException;
+import ru.spbau.group202.fl.sharkova.hw4lexer.lexer.LexerException;
 
 /**
  * This class represents a L language literal

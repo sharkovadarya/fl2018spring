@@ -1,6 +1,6 @@
-package ru.spbau.group202.fl.sharkova.hw4lexer;
+package ru.spbau.group202.fl.sharkova.hw5.lexer;
 
-import ru.spbau.group202.fl.sharkova.hw4lexer.tokens.*;
+import ru.spbau.group202.fl.sharkova.hw5.lexer.tokens.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +27,10 @@ public class Lexer {
         return tokenize(input).stream().map(Token::getToken).collect(Collectors.joining("; "));
     }
 
+    public static List<Token> getTokensList(String input) throws LexerException {
+        return tokenize(input);
+    }
+
     private static ArrayList<Token> tokenize(String input) throws LexerException {
         int lineNumber = 0;
         linePos = 0;
@@ -48,6 +52,12 @@ public class Lexer {
                         break;
                     case ')':
                         tokens.add(new SeparatorToken(lineNumber, linePos, linePos, SeparatorToken.CLOSE_BRACKET, ")"));
+                        break;
+                    case '{':
+                        tokens.add(new SeparatorToken(lineNumber, linePos, linePos, SeparatorToken.OPEN_CURLY_BRACKET, "{"));
+                        break;
+                    case '}':
+                        tokens.add(new SeparatorToken(lineNumber, linePos, linePos, SeparatorToken.CLOSE_CURLY_BRACKET, "}"));
                         break;
                     case ';':
                         tokens.add(new SeparatorToken(lineNumber, linePos, linePos, SeparatorToken.SEMICOLON, ";"));
@@ -127,6 +137,17 @@ public class Lexer {
                     case '|': {
                             if (i + 1 < input.length() && input.charAt(i + 1) == '|') {
                                 tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.OR, "||"));
+                                i++;
+                                linePos++;
+                            } else {
+                                throw new LexerException("Unable to tokenize expression at line "
+                                        + lineNumber + ", position " + linePos);
+                            }
+                        }
+                        break;
+                    case ':': {
+                            if (i + 1 < input.length() && input.charAt(i + 1) == '=') {
+                                tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, ":="));
                                 i++;
                                 linePos++;
                             } else {

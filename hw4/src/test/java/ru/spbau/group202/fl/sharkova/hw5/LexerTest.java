@@ -1,6 +1,8 @@
 package ru.spbau.group202.fl.sharkova.hw4lexer;
 
 import org.junit.Test;
+import ru.spbau.group202.fl.sharkova.hw4lexer.lexer.Lexer;
+import ru.spbau.group202.fl.sharkova.hw4lexer.lexer.LexerException;
 
 import static org.junit.Assert.*;
 

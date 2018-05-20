@@ -1,4 +1,4 @@
-package ru.spbau.group202.fl.sharkova.hw4lexer.tokens;
+package ru.spbau.group202.fl.sharkova.hw4lexer.lexer.tokens;
 
 /**
  * This class represents a L language keyword
