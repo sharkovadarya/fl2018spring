@@ -271,25 +271,30 @@ public class Parser {
         i = parseUntilEndOfBlock(i, thenBlock);
         TreeNode<ASTNode> elseBlock = new ArrayMultiTreeNode<>(new ASTNode(ASTNode.ELSE_BLOCK));
         i = next(i);
-        if (!(t instanceof KeywordToken && t.token == KeywordToken.ELSE)) {
-            reportParsingError(t);
-        } else {
+        if ((t instanceof KeywordToken && t.token == KeywordToken.ELSE)) {
             addToken(elseBlock);
+
+            i = next(i);
+            if (!(t instanceof SeparatorToken && t.token == SeparatorToken.OPEN_CURLY_BRACKET)) {
+                reportParsingError(t);
+            }
+
+            int res = parseUntilEndOfBlock(i, elseBlock);
+            if (res != -1) {
+                ifStatement.add(thenBlock);
+                ifStatement.add(elseBlock);
+                parent.add(ifStatement);
+            }
+
+            return res;
         }
 
-        i = next(i);
-        if (!(t instanceof SeparatorToken && t.token == SeparatorToken.OPEN_CURLY_BRACKET)) {
-            reportParsingError(t);
-        }
-
-        int res = parseUntilEndOfBlock(i, elseBlock);
-        if (res != -1) {
-            ifStatement.add(thenBlock);
-            ifStatement.add(elseBlock);
-            parent.add(ifStatement);
-        }
-
-        return res;
+        // the tree can't be exactly the same as there's no 'else' keyword token
+        // omitting 'else' is a form of syntactic sugar
+        ifStatement.add(thenBlock);
+        ifStatement.add(elseBlock);
+        parent.add(ifStatement);
+        return i - 1;
     }
 
     private int parseUntilEndOfBlock(int i, TreeNode<ASTNode> parent) throws ParseException {
@@ -336,7 +341,7 @@ public class Parser {
 
     private int next(int i) {
         i++;
-        if (i >= tokens.size()) {
+        if (i == -1 || i >= tokens.size()) {
             return -1;
         }
 

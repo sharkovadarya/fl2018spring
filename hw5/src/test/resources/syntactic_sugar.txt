@@ -1,0 +1,14 @@
+if (x >= 11)
+then
+{
+x++;
+write(x);
+}
+else
+{
+x--;
+write(x);
+}
+
+if (x <= 90) then {x += 3; write(x);}
+if (x > 90) then {x %= 3; read(y);}

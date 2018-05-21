@@ -186,6 +186,12 @@ public class ParserTest {
         System.out.println(tree);
     }
 
+    @Test
+    public void testSyntacticSugar() throws IOException, LexerException, ParseException {
+        TreeNode<ASTNode> tree = getTree("syntactic_sugar.txt");
+        System.out.println(tree);
+    }
+
     // correctness of messages will not be checked
     // as the messages are formed from tokens
     // and correctness of tokens has been checked in previous h/w
@@ -209,11 +215,6 @@ public class ParserTest {
     @Test(expected = ParseException.class)
     public void testMalformedIfCondition() throws LexerException, ParseException {
         testInput("if (if (x) then {function1(x);} else {function2(x);}) then {function1(x);} else {function2(x);}");
-    }
-
-    @Test(expected = ParseException.class)
-    public void testMalformedIf() throws LexerException, ParseException {
-        testInput("if (x == 30) then {x := 31;}");
     }
 
     @Test(expected = ParseException.class)
@@ -248,8 +249,8 @@ public class ParserTest {
         testInput("read(30);");
     }
 
-    private TreeNode<ASTNode> getTree(String file1) throws IOException, LexerException, ParseException {
-        File f = new File("src/test/resources/" + file1);
+    private TreeNode<ASTNode> getTree(String file) throws IOException, LexerException, ParseException {
+        File f = new File("src/test/resources/" + file);
         byte[] encoded = Files.readAllBytes(f.toPath());
         String input = new String(encoded);
         Parser parser = new Parser(Lexer.getTokensList(input));

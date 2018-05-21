@@ -66,20 +66,74 @@ public class Lexer {
                         tokens.add(new SeparatorToken(lineNumber, linePos, linePos, SeparatorToken.COMMA, ","));
                         break;
                     // operators
+                    // generating fake tokens is easier for the parser later
+                    // even if it does not give correct output for tokenizing queries
                     case '+':
-                        tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.PLUS, "+"));
+                        if (i + 1 < input.length() &&
+                                (input.charAt(i + 1) == '=' || input.charAt(i + 1) == '+')) {
+                            // fake tokens
+                            Token prev = tokens.get(tokens.size() - 1);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, ":= (actual token: +=)"));
+                            tokens.add(prev);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.PLUS, "+ (actual token: +=)"));
+                            if (input.charAt(i + 1) == '+') {
+                                tokens.add(new LiteralToken(lineNumber, linePos, linePos + 1, LiteralToken.NUMBER, "1"));
+                            }
+                            i++;
+                        } else {
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.PLUS, "+"));
+                        }
                         break;
                     case '-':
-                        tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.MINUS, "-"));
+                        if (i + 1 < input.length() && (input.charAt(i + 1) == '=' || input.charAt(i + 1) == '-')) {
+                            // fake tokens
+                            Token prev = tokens.get(tokens.size() - 1);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, ":= (actual token: -=)"));
+                            tokens.add(prev);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.MINUS, "- (actual token: -=)"));
+                            if (input.charAt(i + 1) == '-') {
+                                tokens.add(new LiteralToken(lineNumber, linePos, linePos + 1, LiteralToken.NUMBER, "1"));
+                            }
+                            i++;
+                        } else {
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.MINUS, "-"));
+                        }
                         break;
                     case '*':
-                        tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.MUL, "*"));
+                        if (i + 1 < input.length() && input.charAt(i + 1) == '=') {
+                            // fake tokens
+                            Token prev = tokens.get(tokens.size() - 1);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, ":= (actual token: *=)"));
+                            tokens.add(prev);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.MUL, "* (actual token: *=)"));
+                            i++;
+                        } else {
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.MUL, "*"));
+                        }
                         break;
                     case '/':
-                        tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.DIV, "/"));
+                        if (i + 1 < input.length() && input.charAt(i + 1) == '=') {
+                            // fake tokens
+                            Token prev = tokens.get(tokens.size() - 1);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, ":= (actual token: /=)"));
+                            tokens.add(prev);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.DIV, "/ (actual token: /=)"));
+                            i++;
+                        } else {
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.DIV, "/"));
+                        }
                         break;
                     case '%':
-                        tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.REM, "%"));
+                        if (i + 1 < input.length() && input.charAt(i + 1) == '=') {
+                            // fake tokens
+                            Token prev = tokens.get(tokens.size() - 1);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.ASSIGN, "%= (actual token: %=)"));
+                            tokens.add(prev);
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos + 1, OperatorToken.REM, "% (actual token: %=)"));
+                            i++;
+                        } else {
+                            tokens.add(new OperatorToken(lineNumber, linePos, linePos, OperatorToken.REM, "%"));
+                        }
                         break;
                     case '=': {
                             if (i + 1 < input.length() && input.charAt(i + 1) == '=') {
