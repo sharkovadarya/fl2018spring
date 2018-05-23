@@ -131,6 +131,13 @@ public class Parser {
                 TreeNode<ASTNode> functionCall = new ArrayMultiTreeNode<>(new ASTNode(ASTNode.FUNCTION_CALL));
                 TreeNode<ASTNode> functionArguments = new ArrayMultiTreeNode<>(new ASTNode(ASTNode.FUNCTION_ARGUMENTS));
                 while (true) {
+                    if (i + 1 < tokens.size()) {
+                        Token t1 = tokens.get(i + 1);
+                        if (t1 instanceof SeparatorToken && t1.token == SeparatorToken.CLOSE_BRACKET) {
+                            i = next(i);
+                            break;
+                        }
+                    }
                     i = parseExpression(i, functionArguments);
                     i = next(i);
                     if (t instanceof SeparatorToken) {
