@@ -75,7 +75,7 @@
     read (z);
     function1(x, y, z);
     function2();
-    k := x * y - 2
+    k := x * y - 2;
     if (k % 3 == 0)
     then
     {
